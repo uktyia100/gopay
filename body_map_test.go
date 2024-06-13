@@ -3,11 +3,26 @@ package gopay
 import (
 	"encoding/json"
 	"encoding/xml"
+	"reflect"
 	"testing"
 
 	"github.com/go-pay/util"
 	"github.com/go-pay/xlog"
 )
+
+func TestBodyMapLoop(t *testing.T) {
+	bm := make(BodyMap)
+	bm.SetBodyMap("headers", func(bm BodyMap) {
+		bm.Set("token", "abc").Set("cookie", "def")
+	}).Set("id", 1)
+
+	headers, ok := bm["headers"].(BodyMap)
+	if ok && reflect.TypeOf(headers).Kind() == reflect.Map {
+		for k, v := range headers {
+			t.Logf("%s=>%s", k, v)
+		}
+	}
+}
 
 func TestBodyMapSetBodyMap(t *testing.T) {
 	bm := make(BodyMap)

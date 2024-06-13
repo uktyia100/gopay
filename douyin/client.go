@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"hash"
 	"net/http"
+	"reflect"
 	"sort"
 	"strings"
 	"sync"
@@ -128,9 +129,15 @@ func (c *Client) doPost(ctx context.Context, path string, bm gopay.BodyMap) (bs 
 	}
 	bm.Set("app_id", c.AppId)
 	bm.Set("sign", sign)
-	fmt.Println(sign)
 	req := c.hc.Req()
 	req.Header.Add("Accept", "application/json")
+	headers, ok := bm["headers"].(gopay.BodyMap)
+	if ok && reflect.TypeOf(headers).Kind() == reflect.Map {
+		for k, v := range headers {
+			req.Header.Add(k, fmt.Sprintf("%v", v))
+		}
+	}
+
 	if c.DebugSwitch == gopay.DebugOn {
 		xlog.Debugf("DouYin_Req_Path: %s", path)
 		xlog.Debugf("DouYin_Req_Body: %s", bm.JsonBody())

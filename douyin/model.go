@@ -41,10 +41,12 @@ type AccessTokenReq struct {
 }
 
 type AccessTokenResp struct {
-	Data struct {
-		AccessToken string `json:"access_token"`
-		ExpiresIn   int    `json:"expires_in"`
-	} `json:"data"`
-	ErrCode int    `json:"err_no"`
-	ErrMsg  string `json:"err_tips"`
+	Data    *AccessTokenData `json:"data,omitempty"`
+	ErrCode int              `json:"err_no"`
+	ErrMsg  string           `json:"err_tips"`
+}
+
+type AccessTokenData struct {
+	AccessToken string `json:"access_token"`
+	ExpiresIn   int64  `json:"expires_in"`
 }
